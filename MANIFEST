@@ -20,5 +20,6 @@ t/005-multiples-w-error.t
 t/010-when.t
 t/011-when-w-error.t
 t/020-chaining.t
+t/021-chaining-errors.t
 t/lib/AsyncUtil.pm
 weaver.ini
