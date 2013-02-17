@@ -4,7 +4,8 @@ author:
   - 'Stevan Little <stevan.little@iinteractive.com>'
 build_requires:
   AnyEvent: 0
-  Test::More: 0.88
+  Test::Fatal: 0
+  Test::More: 0.89
 configure_requires:
   ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
@@ -21,5 +22,5 @@ requires:
   constant: 0
   strict: 0
   warnings: 0
-version: 0.02
+version: 0.03
 x_authority: cpan:STEVAN

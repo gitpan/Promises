@@ -8,7 +8,13 @@ README.md
 dist.ini
 example/chaining-example.pl
 example/example.pl
+example/mojo-promises.pl
+example/test.pl
 lib/Promises.pm
+lib/Promises/Cookbook/ChainingAndPipelining.pod
+lib/Promises/Cookbook/ScalaFuturesComparison.pod
+lib/Promises/Cookbook/SynopsisBreakdown.pod
+lib/Promises/Cookbook/TIMTOWTDI.pod
 lib/Promises/Deferred.pm
 lib/Promises/Promise.pm
 t/000-load.t
@@ -21,5 +27,6 @@ t/010-when.t
 t/011-when-w-error.t
 t/020-chaining.t
 t/021-chaining-errors.t
+t/050-wrap-error-args.t
 t/lib/AsyncUtil.pm
 weaver.ini
