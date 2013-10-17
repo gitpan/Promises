@@ -5,6 +5,7 @@ META.yml
 Makefile.PL
 README
 README.md
+__NOTES__.txt
 dist.ini
 example/chaining-example.pl
 example/example.pl

@@ -1,0 +1,50 @@
+09:12 rafl: what's your thoughts on https://github.com/rafl/promises-perl/commit/6b659cd0985ad1a48a0740aeae57895be0ab3e5b?
+09:12 rafl: is that testing the behaviour i should expect?
+09:25 rafl: it also happens to be blocking some of my prg work
+09:55 stevan: yeah i saw the patch come in last night, but i was too tired to review it
+09:59 stevan: ah yes, that makes sense
+09:59 stevan: patch applied, i will release it later today sometime
+10:03 rafl: thanks for looking
+10:03 rafl: take your time releasing
+10:04 rafl: i also think i got a comment on the TIMTOWTDI section in the docs
+10:05 rafl: you seem to claim my $all_product_info = { product => $product_cv->recv, ... # more cv waits }; enforces any kind of order in how the requests are processed
+10:05 rafl: that's not really true. is it?
+10:08 stevan: actually i released it anyway
+10:08 rafl: sweet. thanks!
+10:09 stevan: I would think that wouldbe true
+10:09 stevan: that hash construction enforced some order of execution
+10:09 rafl: let's say you enter the first $cv->recv
+10:09 rafl: it'll enter your main loop
+10:09 rafl: which will then process any response that is received
+10:10 rafl: not just the one that'll trigger the $cv you're waiting on
+10:10 rafl: so while the first ->recv won't return
+10:10 rafl: you might end up calling ->send($results) on other condvars
+10:10 stevan: ah
+10:10 stevan: ok
+10:10 rafl: later, when the ->recv you've waited on returns
+10:10 rafl: the following ->recvs return immediately
+10:11 rafl: so it's "enforcing" the same kind of "order" that you enforce in Promises::when
+10:11 stevan: yeah I wasnt sure if my examples were 100% correct
+10:11 stevan: and it was hard to prove one way or the other
+10:11 stevan: ok, I need to go back and visit those docs again
+10:11 rafl: a pretty common pattern i use in code without Promises is this:
+10:11 stevan: I will save this chat for when i do that :)
+10:12 rafl: my %pending_requests = map { ($_ => 1) } @things_im_requesting;
+10:13 rafl: my %results;
+10:13 rafl: for my $thing (@things_im_requesting) {
+10:13 rafl:  queue_get_thing($thing, sub {
+10:13 rafl:    my ($ret) = @_;
+10:13 rafl:    delete $pending_requests{$thing};
+10:13 rafl:    $results{$id} = $ret;
+10:14 rafl:    $params->{cb}->(\%results) if !keys %pending_requests;
+10:14 rafl:  });
+10:14 rafl: }
+10:14 rafl: which i guess is closer to the thing you're making really easy with Promises, and especially its when() function, than some of the examples you give in the docs
+10:17 rafl: (you forgot to push the 0.03 tag)
+10:23 stevan: ah, I always forget to tag and push them
+10:23 stevan: well I am open to any improvements on Promises, as always :)
+10:23 rafl: you might wanna look into making dzil do it for you
+10:24 rafl: yeah. i don't really have any concrete suggestions yet
+10:24 stevan: ok
+10:24 rafl: i'm just playing around with it for the first time and find out how it feels
+10:24 stevan: wlel I will save this chat for when i fix the docs

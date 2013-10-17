@@ -1,16 +1,18 @@
 package Promises::Cookbook::ScalaFuturesComparison;
 
+# ABSTRACT: A comparison of Scala Futures with Promises
+
 __END__
 
 =pod
 
 =head1 NAME
 
-Promises::Cookbook::ScalaFuturesComparison
+Promises::Cookbook::ScalaFuturesComparison - A comparison of Scala Futures with Promises
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 DESCRIPTION
 
@@ -125,9 +127,9 @@ chained and so this will depend on it.
 
 TODO ... figure out how retry can be generic ...
 
-=head1 NAME
+=head1 SEE ALSO
 
-Promises::Cookbook::ScalaFuturesComparison - A comparison of Scala Futures with Promises
+Systems Programming at Twitter - L<http://monkey.org/~marius/talks/twittersystems/>
 
 =head1 AUTHOR
 
