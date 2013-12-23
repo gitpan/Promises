@@ -3,7 +3,7 @@ BEGIN {
   $Promises::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::VERSION = '0.04';
+  $Promises::VERSION = '0.05';
 }
 # ABSTRACT: An implementation of Promises in Perl
 
@@ -65,7 +65,7 @@ Promises - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 
@@ -213,7 +213,7 @@ instead.
 
 =over 4
 
-=item "You're Missing the Point of Promises" L<https://gist.github.com/3889970>
+=item "You're Missing the Point of Promises" L<http://domenic.me/2012/10/14/youre-missing-the-point-of-promises/>
 
 =item L<http://wiki.commonjs.org/wiki/Promises/A>
 

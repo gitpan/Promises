@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Deferred::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::Deferred::VERSION = '0.04';
+  $Promises::Deferred::VERSION = '0.05';
 }
 # ABSTRACT: An implementation of Promises in Perl
 
@@ -23,17 +23,14 @@ use constant REJECTING   => 'rejecting';
 
 sub new {
     my $class = shift;
-    my $self  = bless {
+    bless {
         resolved => [],
         rejected => [],
-        status   => IN_PROGRESS,
-        promise  => undef
+        status   => IN_PROGRESS
     } => $class;
-    $self->{'promise'} = Promises::Promise->new( $self );
-    $self;
 }
 
-sub promise { (shift)->{'promise'} }
+sub promise { Promises::Promise->new( shift ) }
 sub status  { (shift)->{'status'}  }
 sub result  { (shift)->{'result'}  }
 
@@ -105,8 +102,11 @@ sub then {
 sub _wrap {
     my ($self, $d, $f, $method) = @_;
     return sub {
-        my @results = $f->( @_ );
-        if ( (scalar @results) == 1 && blessed $results[0] && $results[0]->isa('Promises::Promise') ) {
+        local $@;
+        my @results = do { $f->( @_ ) };
+        if ($@) {
+            $d->reject( $@ );
+        } elsif ( (scalar @results) == 1 && blessed $results[0] && $results[0]->isa('Promises::Promise') ) {
             $results[0]->then(
                 sub { $d->resolve( @{ $results[0]->result } ) },
                 sub { $d->reject( @{ $results[0]->result } )  },
@@ -135,7 +135,7 @@ Promises::Deferred - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 
@@ -174,7 +174,8 @@ This will construct an instance, it takes no arguments.
 =item C<promise>
 
 This will return a L<Promises::Promise> that can be used
-as a handle for this object.
+as a handle for this object. It will return a new one
+every time it is called.
 
 =item C<status>
 
