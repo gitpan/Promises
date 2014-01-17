@@ -3,31 +3,48 @@ BEGIN {
   $Promises::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::VERSION = '0.05';
+  $Promises::VERSION = '0.06';
 }
+
 # ABSTRACT: An implementation of Promises in Perl
 
 use strict;
 use warnings;
 
 use Promises::Deferred;
+our $Backend = 'Promises::Deferred';
 
 use Sub::Exporter -setup => {
-    exports => [
+    collectors => [ 'backend' => \'_set_backend' ],
+    exports    => [
         qw[ deferred collect ],
         'when' => sub {
-            warn "The 'when' subroutine is deprecated, please use 'collect' instead.";
+            warn
+                "The 'when' subroutine is deprecated, please use 'collect' instead.";
             return \&collect;
-        }
+            }
     ]
 };
 
-sub deferred { Promises::Deferred->new; }
+sub _set_backend {
+    my ( $class, $arg ) = @_;
+    my $backend = $arg->[0] or return;
+
+    unless ( $backend =~ s/^\+// ) {
+        $backend = 'Promises::Deferred::' . $backend;
+    }
+    require Module::Runtime;
+    $Backend = Module::Runtime::use_module($backend) || return;
+    return 1;
+
+}
+
+sub deferred { $Backend->new; }
 
 sub collect {
     my @promises = @_;
 
-    my $all_done  = Promises::Deferred->new;
+    my $all_done  = $Backend->new;
     my $results   = [];
     my $remaining = scalar @promises;
 
@@ -35,17 +52,19 @@ sub collect {
         my $p = $promises[$i];
         $p->then(
             sub {
-                $results->[$i] = [ @_ ];
+                $results->[$i] = [@_];
                 $remaining--;
-                if ( $remaining == 0 && $all_done->status ne $all_done->REJECTED ) {
-                    $all_done->resolve( @$results );
+                if (   $remaining == 0
+                    && $all_done->status ne $all_done->REJECTED )
+                {
+                    $all_done->resolve(@$results);
                 }
             },
-            sub { $all_done->reject( @_ ) },
+            sub { $all_done->reject(@_) },
         );
     }
 
-    $all_done->resolve( @$results ) if $remaining == 0;
+    $all_done->resolve(@$results) if $remaining == 0;
 
     $all_done->promise;
 }
@@ -65,7 +84,7 @@ Promises - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 SYNOPSIS
 
@@ -134,9 +153,50 @@ practices are not the same as Javascript idioms and best
 practices. However, the one important difference that should be
 noted is that "Promise/A+" strongly suggests that the callbacks
 given to C<then> should be run asynchronously (meaning in the
-next turn of the event loop). We do not do this because doing
-so would bind us to a given event loop implementation, which
-we very much want to avoid.
+next turn of the event loop). We do not do this by default,
+because doing so would bind us to a given event loop
+implementation, which we very much want to avoid. However we
+now allow you to specify an event loop "backend" when using
+Promises, and assuming a Deferred backend has been written
+it will provide this feature accordingly.
+
+=head2 Using a Deferred backend
+
+As mentioned above, the default Promises::Deferred class calls the
+success or error C<then()> callback synchronously, because it isn't
+tied to a particular event loop.  However, it is recommended that you
+use the appropriate Deferred backend for whichever event loop you are
+running.
+
+Typically an application uses a single event loop, so all Promises
+should use the same event-loop. Module implementers should just use the
+Promises class directly:
+
+    package MyClass;
+    use Promises qw(deferred collected);
+
+End users should specify which Deferred backend they wish to use. For
+instance if you are using AnyEvent, you can do:
+
+    use Promises backend => ['AnyEvent'];
+    use MyClass;
+
+The Promises returned by MyClass will automatically use whichever
+event loop AnyEvent is using.
+
+See:
+
+=over 1
+
+=item * L<Promises::Deferred::AE>
+
+=item * L<Promises::Deferred::AnyEvent>
+
+=item * L<Promises::Deferred::EV>
+
+=item * L<Promises::Deferred::Mojo>
+
+=back
 
 =head2 Relation to Promises/Futures in Scala
 
@@ -172,6 +232,11 @@ counter examples with various modules.
 One of the key benefits of Promises is that it retains much of
 the flow of a syncronous program, this entry illustrates that
 and compares it with a syncronous (or blocking) version.
+
+=item L<Promises::Cookbook::Recursion>
+
+This entry explains how to keep the stack under control when
+using Promises recursively.
 
 =item L<Promises::Cookbook::ScalaFuturesComparison>
 

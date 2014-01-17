@@ -17,11 +17,17 @@ meta-spec:
   version: 1.4
 name: Promises
 requires:
+  AE: 0
+  AnyEvent: 0
   Carp: 0
+  EV: 0
+  Module::Runtime: 0
+  Mojo::IOLoop: 0
   Scalar::Util: 0
   Sub::Exporter: 0
   constant: 0
+  parent: 0
   strict: 0
   warnings: 0
-version: 0.05
+version: 0.06
 x_authority: cpan:STEVAN
