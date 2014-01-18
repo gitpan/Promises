@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Cookbook::Recursion::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::Cookbook::Recursion::VERSION = '0.06';
+  $Promises::Cookbook::Recursion::VERSION = '0.07';
 }
 
 # ABSTRACT: Examples of recursive asynchronous operations
@@ -18,7 +18,7 @@ Promises::Cookbook::Recursion - Examples of recursive asynchronous operations
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 

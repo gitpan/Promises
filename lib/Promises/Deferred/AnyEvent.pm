@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Deferred::AnyEvent::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::Deferred::AnyEvent::VERSION = '0.06';
+  $Promises::Deferred::AnyEvent::VERSION = '0.07';
 }
 # ABSTRACT: An implementation of Promises in Perl
 
@@ -38,7 +38,7 @@ Promises::Deferred::AnyEvent - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 

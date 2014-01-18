@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Deferred::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::Deferred::VERSION = '0.06';
+  $Promises::Deferred::VERSION = '0.07';
 }
 # ABSTRACT: An implementation of Promises in Perl
 
@@ -12,6 +12,15 @@ use warnings;
 
 use Scalar::Util qw[ blessed reftype ];
 use Carp         qw[ confess ];
+
+BEGIN {
+    if ( $^V lt "v5.14" ) {
+        eval "sub LOCALISE_EXCEPTIONS () {0}";
+    }
+    else {
+        eval "sub LOCALISE_EXCEPTIONS () {1}";
+    }
+}
 
 use Promises::Promise;
 
@@ -126,7 +135,7 @@ sub finalize {
 sub _wrap {
     my ($self, $d, $f, $method) = @_;
     return sub {
-        local $@;
+        LOCALISE_EXCEPTIONS && local $@;
         my @results = do { $f->( @_ ) };
         if ($@) {
             $d->reject( $@ );
@@ -162,7 +171,7 @@ Promises::Deferred - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 

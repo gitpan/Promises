@@ -3,7 +3,7 @@ BEGIN {
   $Promises::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::VERSION = '0.06';
+  $Promises::VERSION = '0.07';
 }
 
 # ABSTRACT: An implementation of Promises in Perl
@@ -84,7 +84,7 @@ Promises - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 
