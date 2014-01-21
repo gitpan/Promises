@@ -5,7 +5,6 @@ META.yml
 Makefile.PL
 README
 README.md
-__NOTES__.txt
 dist.ini
 example/chaining-example.pl
 example/example.pl
@@ -13,7 +12,7 @@ example/mojo-promises.pl
 example/test.pl
 lib/Promises.pm
 lib/Promises/Cookbook/ChainingAndPipelining.pod
-lib/Promises/Cookbook/Recursion.pm
+lib/Promises/Cookbook/Recursion.pod
 lib/Promises/Cookbook/ScalaFuturesComparison.pod
 lib/Promises/Cookbook/SynopsisBreakdown.pod
 lib/Promises/Cookbook/TIMTOWTDI.pod
@@ -39,7 +38,12 @@ t/031-deferred-AE.t
 t/032-deferred-AnyEvent.t
 t/033-deferred-EV.t
 t/034-deferred-Mojo.t
-t/050-wrap-error-args.t
+t/040_finally.t
+t/050-exceptions-pp.t
+t/051-exceptions-pp-anyevent.t
+t/052-exceptions-ev-anyevent.t
+t/053-exceptions-mojo.t
 t/060-free-refs.t
 t/lib/AsyncUtil.pm
+t/lib/NoEV.pm
 weaver.ini

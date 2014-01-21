@@ -12,7 +12,7 @@ Promises::Cookbook::ChainingAndPipelining - Examples of chaining/pipelining of a
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 

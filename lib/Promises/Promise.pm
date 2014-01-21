@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Promise::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::Promise::VERSION = '0.07';
+  $Promises::Promise::VERSION = '0.08';
 }
 
 # ABSTRACT: An implementation of Promises in Perl
@@ -21,10 +21,12 @@ sub new {
     bless { 'deferred' => $deferred } => $class;
 }
 
-sub then     { (shift)->{'deferred'}->then(@_) }
-sub finalize { (shift)->{'deferred'}->finalize(@_) }
-sub status   { (shift)->{'deferred'}->status }
-sub result   { (shift)->{'deferred'}->result }
+sub then    { (shift)->{'deferred'}->then(@_) }
+sub catch   { (shift)->{'deferred'}->catch(@_) }
+sub done    { (shift)->{'deferred'}->done(@_) }
+sub finally { (shift)->{'deferred'}->finally(@_) }
+sub status  { (shift)->{'deferred'}->status }
+sub result  { (shift)->{'deferred'}->result }
 
 sub is_unfulfilled { (shift)->{'deferred'}->is_unfulfilled }
 sub is_fulfilled   { (shift)->{'deferred'}->is_fulfilled }
@@ -48,7 +50,7 @@ Promises::Promise - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 DESCRIPTION
 
@@ -79,9 +81,17 @@ object to proxy.
 
 This calls C<then> on the proxied L<Promises::Deferred> instance.
 
-=item C<finalize( $callback, $error )>
+=item C<catch( $error )>
 
-This calls C<finalize> on the proxied L<Promises::Deferred> instance.
+This calls C<catch> on the proxied L<Promises::Deferred> instance.
+
+=item C<done( $callback, $error )>
+
+This calls C<done> on the proxied L<Promises::Deferred> instance.
+
+=item C<finally( $callback )>
+
+This calls C<finally> on the proxied L<Promises::Deferred> instance.
 
 =item C<status>
 

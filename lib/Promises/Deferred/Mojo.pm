@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Deferred::Mojo::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::Deferred::Mojo::VERSION = '0.07';
+  $Promises::Deferred::Mojo::VERSION = '0.08';
 }
 # ABSTRACT: An implementation of Promises in Perl
 
@@ -38,7 +38,7 @@ Promises::Deferred::Mojo - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 

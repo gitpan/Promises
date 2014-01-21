@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Deferred::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::Deferred::VERSION = '0.07';
+  $Promises::Deferred::VERSION = '0.08';
 }
 # ABSTRACT: An implementation of Promises in Perl
 
@@ -12,15 +12,6 @@ use warnings;
 
 use Scalar::Util qw[ blessed reftype ];
 use Carp         qw[ confess ];
-
-BEGIN {
-    if ( $^V lt "v5.14" ) {
-        eval "sub LOCALISE_EXCEPTIONS () {0}";
-    }
-    else {
-        eval "sub LOCALISE_EXCEPTIONS () {1}";
-    }
-}
 
 use Promises::Promise;
 
@@ -75,6 +66,16 @@ sub reject {
     $self;
 }
 
+sub _notify_if_fulfilled {
+    my $self = shift;
+    if ( $self->status eq RESOLVED ) {
+        $self->resolve( @{ $self->result } );
+    }
+    elsif ( $self->status eq REJECTED ) {
+        $self->reject( @{ $self->result } );
+    }
+}
+
 sub then {
     my ($self, $callback, $error) = @_;
 
@@ -95,17 +96,20 @@ sub then {
     push @{ $self->{'resolved'} } => $self->_wrap( $d, $callback, 'resolve' );
     push @{ $self->{'rejected'} } => $self->_wrap( $d, $error,    'reject'  );
 
-    if ( $self->status eq RESOLVED ) {
-        $self->resolve( @{ $self->result } );
-    }
-    elsif ( $self->status eq REJECTED ) {
-        $self->reject( @{ $self->result } );
-    }
-
+    $self->_notify_if_fulfilled;
     $d->promise;
 }
 
-sub finalize {
+sub catch {
+    my ( $self, $error ) = @_;
+
+    ( ref $error && reftype $error eq 'CODE' )
+        || confess "You must pass in a error callback";
+
+    $self->then( sub {@_}, $error );
+}
+
+sub done {
     my ($self, $callback, $error) = @_;
 
     (ref $callback && reftype $callback eq 'CODE')
@@ -123,22 +127,50 @@ sub finalize {
     push @{ $self->{'resolved'} } => $callback;
     push @{ $self->{'rejected'} } => $error;
 
-    if ( $self->status eq RESOLVED ) {
-        $self->resolve( @{ $self->result } );
-    }
-    elsif ( $self->status eq REJECTED ) {
-        $self->reject( @{ $self->result } );
-    }
+    $self->_notify_if_fulfilled;
     ();
+}
+
+sub finally {
+    my ( $self, $callback ) = @_;
+
+    ( ref $callback && reftype $callback eq 'CODE' )
+        || confess "You must pass in a callback";
+
+    my $d = ( ref $self )->new;
+
+    my ( @result, $method );
+    my $finish_d = sub { $d->$method(@result) };
+
+    my $f = sub {
+        ( $method, @result ) = @_;
+        local $@;
+        my ($p) = eval { $callback->(@_) };
+        if ( $p && blessed $p && $p->isa('Promises::Promise') ) {
+            return $p->then( $finish_d, $finish_d );
+        }
+        $finish_d->();
+
+    };
+
+    push @{ $self->{'resolved'} } => sub { $f->( 'resolve', @_ ) };
+    push @{ $self->{'rejected'} } => sub { $f->( 'reject',  @_ ) };
+
+    $self->_notify_if_fulfilled;
+    $d->promise;
+
 }
 
 sub _wrap {
     my ($self, $d, $f, $method) = @_;
     return sub {
-        LOCALISE_EXCEPTIONS && local $@;
-        my @results = do { $f->( @_ ) };
-        if ($@) {
-            $d->reject( $@ );
+        local $@;
+        my (@results,$error);
+        eval { @results = do { $f->(@_)}; 1}
+            || do { $error = $@ || 'Unknown error'};
+
+        if ($error) {
+            $d->reject( $error );
         } elsif ( (scalar @results) == 1 && blessed $results[0] && $results[0]->isa('Promises::Promise') ) {
             $results[0]->then(
                 sub { $d->resolve( @{ $results[0]->result } ) },
@@ -171,7 +203,7 @@ Promises::Deferred - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 
@@ -240,6 +272,12 @@ It should be noted that this method will always return
 the associated L<Promises::Promise> instance so that you
 can chain things if you like.
 
+The success and error callbacks are wrapped in an C<eval> block,
+so you can safely call C<die()> within a callback to signal
+an error without killing your application. If an exception
+is caught, the next link in the chain will be C<reject>'ed
+and receive the exception in C<@_>.
+
 If this is the last link in the chain, and there is no
 C<$error> callback, the error be silent. You can still
 find it by checking the C<result> method, but no action
@@ -249,7 +287,14 @@ the error to the next link in the chain. This allows
 error handling to be consolidated at the point in the
 chain where it makes the most sense.
 
-=item C<finalize( $callback, ?$error )>
+=item C<catch( $error )>
+
+This method registers a a single error callback.  It is the equivalent
+of calling:
+
+    $promise->then( sub {@_}, $error );
+
+=item C<done( $callback, ?$error )>
 
 This method is used to register two callbacks, the first
 C<$callback> will be called on success and it will be
@@ -258,10 +303,27 @@ call to C<resolve>. The second, C<$error> is optional and
 will be called on error, and will be passed the all the
 values that were sent to the corresponding C<reject>.
 
-Unlike the C<then()> method, C<finalize()> returns an
+Unlike the C<then()> method, C<done()> returns an
 empty list specifically to break the chain and to avoid
 deep recursion.  See the explanation in
 L<Promises::Cookbook::Recursion>.
+
+Also unlike the C<then()> method, C<done()> callbacks are
+not wrapped in an C<eval> block, so calling C<die()> is not
+safe. What will happen if a C<done> callback calls
+C<die()> depends on which event loop you are running: the pure
+Perl L<AnyEvent::Loop> will throw an exception, while
+L<EV> and L<Mojo::IOLoop> will warn and continue running.
+
+=item C<finally( $callback )>
+
+This method is like the C<finally> keyword in a C<try>/C<catch>
+block.  It will execute regardless of whether the promise has
+been resolved or rejected. Typically it is used to clean up
+resources, like closing open files etc. It returns a L<Promises::Promise>
+and so can be chained. The return value is discarded and the
+success or failure of the C<finally> callback will have no
+effect on promises further down the chain.
 
 =item C<resolve( @args )>
 
