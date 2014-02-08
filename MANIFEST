@@ -12,6 +12,7 @@ example/mojo-promises.pl
 example/test.pl
 lib/Promises.pm
 lib/Promises/Cookbook/ChainingAndPipelining.pod
+lib/Promises/Cookbook/GentleIntro.pod
 lib/Promises/Cookbook/Recursion.pod
 lib/Promises/Cookbook/ScalaFuturesComparison.pod
 lib/Promises/Cookbook/SynopsisBreakdown.pod
@@ -28,8 +29,10 @@ t/002-multiples.t
 t/003-post-resolve-then.t
 t/004-error.t
 t/005-multiples-w-error.t
-t/010-when.t
-t/011-when-w-error.t
+t/006-thenable.t
+t/007_callable.t
+t/010-collect.t
+t/011-collect-w-error.t
 t/020-chaining.t
 t/021-chaining-errors.t
 t/025-recursion.t

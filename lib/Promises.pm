@@ -3,7 +3,7 @@ BEGIN {
   $Promises::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::VERSION = '0.08';
+  $Promises::VERSION = '0.90';
 }
 
 # ABSTRACT: An implementation of Promises in Perl
@@ -16,14 +16,7 @@ our $Backend = 'Promises::Deferred';
 
 use Sub::Exporter -setup => {
     collectors => [ 'backend' => \'_set_backend' ],
-    exports    => [
-        qw[ deferred collect ],
-        'when' => sub {
-            warn
-                "The 'when' subroutine is deprecated, please use 'collect' instead.";
-            return \&collect;
-            }
-    ]
+    exports    => [ qw[ deferred collect ]]
 };
 
 sub _set_backend {
@@ -69,9 +62,6 @@ sub collect {
     $all_done->promise;
 }
 
-# keep back compat ... for now
-*when = \&collect;
-
 1;
 
 __END__
@@ -84,7 +74,7 @@ Promises - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.08
+version 0.90
 
 =head1 SYNOPSIS
 
@@ -126,10 +116,46 @@ version 0.08
 
 =head1 DESCRIPTION
 
-This module is an implementation of the "Promise" pattern for
+This module is an implementation of the "Promise/A+" pattern for
 asynchronous programming. Promises are meant to be a way to
 better deal with the resulting callback spaghetti that can often
 result in asynchronous programs.
+
+=head1 FUTURE BACKWARDS COMPATIBILITY WARNING
+
+The version of this module is being bumped up to 0.90 as the first
+step towards 1.0 in which the goal is to have full Promises/A+ spec
+compatibility. This is a departure to the previous goal of being
+compatible with the Promises/A spec, this means that behavior may
+change in subtle ways (we will attempt to document this completely
+and clearly whenever possible).
+
+It is B<HIGHLY> recommended that you test things very thoroughly
+before upgrading to this version.
+
+=head1 BACKWARDS COMPATIBILITY WARNING
+
+In version up to and including 0.08 there was a bug in how
+rejected promises were handled. According to the spec, a
+rejected callback can:
+
+=over
+
+=item *
+
+Rethrow the exception, in which case the next rejected handler
+in the chain would be called, or
+
+=item *
+
+Handle the exception (by not C<die>ing), in which case the next
+B<resolved> handler in the chain would be called.
+
+=back
+
+In previous versions of L<Promises>, this last step was handled incorrectly:
+a rejected handler had no way of handling the exception.  Once a promise
+was rejected, only rejected handlers in the chain would be called.
 
 =head2 Relation to the various Perl event loops
 
@@ -207,14 +233,12 @@ cookbook entry below.
 
 =head2 Cookbook
 
-I have begun moving the docs over into a Cookbook. While this
-module is incredibly simple, the usage of it is quite complex
-and deserves to be explained in detail. It is my plan to grow
-this section to provide examples of the use of Promises in
-a number of situations and with a number of different event
-loops.
-
 =over 1
+
+=item L<Promises::Cookbook::GentleIntro>
+
+Read this first! This cookbook provides a step-by-step explanation
+of how Promises work and how to use them.
 
 =item L<Promises::Cookbook::SynopsisBreakdown>
 
@@ -230,8 +254,8 @@ counter examples with various modules.
 =item L<Promises::Cookbook::ChainingAndPipelining>
 
 One of the key benefits of Promises is that it retains much of
-the flow of a syncronous program, this entry illustrates that
-and compares it with a syncronous (or blocking) version.
+the flow of a synchronous program, this entry illustrates that
+and compares it with a synchronous (or blocking) version.
 
 =item L<Promises::Cookbook::Recursion>
 
@@ -266,27 +290,23 @@ object will be an array of all the results (or errors) of each
 of the C<@promises> in the order in which they where passed
 to C<collect> originally.
 
-=item C<when( @promises )>
-
-This is now deprecated, if you import this it will warn you
-accordingly. Please switch all usage of C<when> to use C<collect>
-instead.
-
 =back
 
 =head1 SEE ALSO
 
+=head2 Promises in General
+
 =over 4
 
-=item "You're Missing the Point of Promises" L<http://domenic.me/2012/10/14/youre-missing-the-point-of-promises/>
+=item L<You're Missing the Point of Promises|http://domenic.me/2012/10/14/youre-missing-the-point-of-promises/>
 
-=item L<http://wiki.commonjs.org/wiki/Promises/A>
+=item L<Systems Programming at Twitter|http://monkey.org/~marius/talks/twittersystems/>
 
-=item L<https://github.com/promises-aplus/promises-spec>
+=item L<SIP-14 - Futures and Promises|http://docs.scala-lang.org/sips/pending/futures-promises.html>
 
-=item L<http://docs.scala-lang.org/sips/pending/futures-promises.html>
+=item L<Promises/A+ spec|http://promises-aplus.github.io/promises-spec/>
 
-=item L<http://monkey.org/~marius/talks/twittersystems/>
+=item L<Promises/A spec|http://wiki.commonjs.org/wiki/Promises/A>
 
 =back
 

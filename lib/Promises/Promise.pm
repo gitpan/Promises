@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Promise::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::Promise::VERSION = '0.08';
+  $Promises::Promise::VERSION = '0.90';
 }
 
 # ABSTRACT: An implementation of Promises in Perl
@@ -33,8 +33,6 @@ sub is_fulfilled   { (shift)->{'deferred'}->is_fulfilled }
 sub is_failed      { (shift)->{'deferred'}->is_failed }
 
 sub is_in_progress { (shift)->{'deferred'}->is_in_progress }
-sub is_resolving   { (shift)->{'deferred'}->is_resolving }
-sub is_rejecting   { (shift)->{'deferred'}->is_rejecting }
 sub is_resolved    { (shift)->{'deferred'}->is_resolved }
 sub is_rejected    { (shift)->{'deferred'}->is_rejected }
 
@@ -50,7 +48,7 @@ Promises::Promise - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.08
+version 0.90
 
 =head1 DESCRIPTION
 
@@ -63,7 +61,7 @@ L<Promises::Deferred> instances.
 Most of the documentation here points back to the
 documentation in the L<Promises::Deferred> module.
 
-Additionally the L<Promises> module contains a long
+Additionally L<Promises::Cookbook::GentleIntro> contains a long
 explanation of how this module, and all it's components
 are meant to work together.
 
@@ -116,14 +114,6 @@ This calls C<is_failed> on the proxied L<Promises::Deferred> instance.
 =item C<is_in_progress>
 
 This calls C<is_in_progress> on the proxied L<Promises::Deferred> instance.
-
-=item C<is_resolving>
-
-This calls C<is_resolving> on the proxied L<Promises::Deferred> instance.
-
-=item C<is_rejecting>
-
-This calls C<is_rejecting> on the proxied L<Promises::Deferred> instance.
 
 =item C<is_resolved>
 

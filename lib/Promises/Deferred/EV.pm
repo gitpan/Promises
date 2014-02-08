@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Deferred::EV::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::Deferred::EV::VERSION = '0.08';
+  $Promises::Deferred::EV::VERSION = '0.90';
 }
 # ABSTRACT: An implementation of Promises in Perl
 
@@ -14,7 +14,7 @@ use EV;
 
 use parent 'Promises::Deferred';
 
-sub _notify {
+sub _notify_backend {
     my ( $self, $callbacks, $result ) = @_;
 
     my $w; $w = EV::timer( 0, 0, sub {
@@ -23,10 +23,6 @@ sub _notify {
         }
         undef $w;
     });
-
-    $self->{'resolved'} = [];
-    $self->{'rejected'} = [];
-
 }
 
 1;
@@ -41,7 +37,7 @@ Promises::Deferred::EV - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.08
+version 0.90
 
 =head1 SYNOPSIS
 

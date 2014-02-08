@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Deferred::AnyEvent::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::Deferred::AnyEvent::VERSION = '0.08';
+  $Promises::Deferred::AnyEvent::VERSION = '0.90';
 }
 # ABSTRACT: An implementation of Promises in Perl
 
@@ -14,16 +14,13 @@ use AnyEvent;
 
 use parent 'Promises::Deferred';
 
-sub _notify {
+sub _notify_backend {
     my ( $self, $callbacks, $result ) = @_;
     AnyEvent::postpone {
         foreach my $cb (@$callbacks) {
             $cb->(@$result);
         }
     };
-    $self->{'resolved'} = [];
-    $self->{'rejected'} = [];
-
 }
 
 1;
@@ -38,7 +35,7 @@ Promises::Deferred::AnyEvent - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.08
+version 0.90
 
 =head1 SYNOPSIS
 

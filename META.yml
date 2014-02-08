@@ -29,5 +29,7 @@ requires:
   parent: 0
   strict: 0
   warnings: 0
-version: 0.08
+resources:
+  repository: https://github.com/stevan/promises-perl.git
+version: 0.90
 x_authority: cpan:STEVAN

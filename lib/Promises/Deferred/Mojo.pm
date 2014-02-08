@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Deferred::Mojo::AUTHORITY = 'cpan:STEVAN';
 }
 {
-  $Promises::Deferred::Mojo::VERSION = '0.08';
+  $Promises::Deferred::Mojo::VERSION = '0.90';
 }
 # ABSTRACT: An implementation of Promises in Perl
 
@@ -14,16 +14,13 @@ use Mojo::IOLoop;
 
 use parent 'Promises::Deferred';
 
-sub _notify {
+sub _notify_backend {
     my ( $self, $callbacks, $result ) = @_;
     Mojo::IOLoop->timer(0,sub {
         foreach my $cb (@$callbacks) {
             $cb->(@$result);
         }
     });
-    $self->{'resolved'} = [];
-    $self->{'rejected'} = [];
-
 }
 
 1;
@@ -38,7 +35,7 @@ Promises::Deferred::Mojo - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.08
+version 0.90
 
 =head1 SYNOPSIS
 
