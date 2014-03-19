@@ -2,10 +2,7 @@ package Promises::Deferred;
 BEGIN {
   $Promises::Deferred::AUTHORITY = 'cpan:STEVAN';
 }
-{
-  $Promises::Deferred::VERSION = '0.90';
-}
-
+$Promises::Deferred::VERSION = '0.91';
 # ABSTRACT: An implementation of Promises in Perl
 
 use strict;
@@ -195,7 +192,7 @@ Promises::Deferred - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.90
+version 0.91
 
 =head1 SYNOPSIS
 
@@ -381,7 +378,7 @@ Stevan Little <stevan.little@iinteractive.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Infinity Interactive, Inc..
+This software is copyright (c) 2014 by Infinity Interactive, Inc..
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

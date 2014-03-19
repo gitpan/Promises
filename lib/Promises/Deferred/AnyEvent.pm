@@ -2,11 +2,8 @@ package Promises::Deferred::AnyEvent;
 BEGIN {
   $Promises::Deferred::AnyEvent::AUTHORITY = 'cpan:STEVAN';
 }
-{
-  $Promises::Deferred::AnyEvent::VERSION = '0.90';
-}
 # ABSTRACT: An implementation of Promises in Perl
-
+$Promises::Deferred::AnyEvent::VERSION = '0.91';
 use strict;
 use warnings;
 
@@ -35,7 +32,7 @@ Promises::Deferred::AnyEvent - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.90
+version 0.91
 
 =head1 SYNOPSIS
 
@@ -71,7 +68,7 @@ Stevan Little <stevan.little@iinteractive.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Infinity Interactive, Inc..
+This software is copyright (c) 2014 by Infinity Interactive, Inc..
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
