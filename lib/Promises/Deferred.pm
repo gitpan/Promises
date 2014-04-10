@@ -2,7 +2,7 @@ package Promises::Deferred;
 BEGIN {
   $Promises::Deferred::AUTHORITY = 'cpan:STEVAN';
 }
-$Promises::Deferred::VERSION = '0.91';
+$Promises::Deferred::VERSION = '0.92';
 # ABSTRACT: An implementation of Promises in Perl
 
 use strict;
@@ -192,7 +192,7 @@ Promises::Deferred - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.91
+version 0.92
 
 =head1 SYNOPSIS
 

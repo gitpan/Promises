@@ -31,5 +31,5 @@ requires:
   warnings: 0
 resources:
   repository: https://github.com/stevan/promises-perl.git
-version: 0.91
+version: 0.92
 x_authority: cpan:STEVAN
