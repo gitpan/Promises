@@ -3,7 +3,7 @@ BEGIN {
   $Promises::Deferred::AE::AUTHORITY = 'cpan:STEVAN';
 }
 # ABSTRACT: An implementation of Promises in Perl
-$Promises::Deferred::AE::VERSION = '0.92';
+$Promises::Deferred::AE::VERSION = '0.93';
 use strict;
 use warnings;
 
@@ -32,7 +32,7 @@ Promises::Deferred::AE - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.92
+version 0.93
 
 =head1 SYNOPSIS
 

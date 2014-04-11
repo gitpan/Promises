@@ -21,12 +21,8 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "Promises",
   "PREREQ_PM" => {
-    "AE" => 0,
-    "AnyEvent" => 0,
     "Carp" => 0,
-    "EV" => 0,
     "Module::Runtime" => 0,
-    "Mojo::IOLoop" => 0,
     "Scalar::Util" => 0,
     "Sub::Exporter" => 0,
     "constant" => 0,
@@ -40,7 +36,7 @@ my %WriteMakefileArgs = (
     "Test::More" => "0.89",
     "lib" => 0
   },
-  "VERSION" => "0.92",
+  "VERSION" => "0.93",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -48,12 +44,9 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
-  "AE" => 0,
   "AnyEvent" => 0,
   "Carp" => 0,
-  "EV" => 0,
   "Module::Runtime" => 0,
-  "Mojo::IOLoop" => 0,
   "Scalar::Util" => 0,
   "Sub::Exporter" => 0,
   "Test::Fatal" => 0,

@@ -17,12 +17,8 @@ meta-spec:
   version: 1.4
 name: Promises
 requires:
-  AE: 0
-  AnyEvent: 0
   Carp: 0
-  EV: 0
   Module::Runtime: 0
-  Mojo::IOLoop: 0
   Scalar::Util: 0
   Sub::Exporter: 0
   constant: 0
@@ -31,5 +27,5 @@ requires:
   warnings: 0
 resources:
   repository: https://github.com/stevan/promises-perl.git
-version: 0.92
+version: 0.93
 x_authority: cpan:STEVAN
