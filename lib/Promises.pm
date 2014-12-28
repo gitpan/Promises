@@ -2,7 +2,7 @@ package Promises;
 BEGIN {
   $Promises::AUTHORITY = 'cpan:STEVAN';
 }
-$Promises::VERSION = '0.93';
+$Promises::VERSION = '0.94';
 # ABSTRACT: An implementation of Promises in Perl
 
 use strict;
@@ -71,7 +71,7 @@ Promises - An implementation of Promises in Perl
 
 =head1 VERSION
 
-version 0.93
+version 0.94
 
 =head1 SYNOPSIS
 
